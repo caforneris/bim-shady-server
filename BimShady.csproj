@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>BimShady</AssemblyName>
+    <RootNamespace>BimShady</RootNamespace>
+    <Version>1.0.0</Version>
+    <!-- Copy NuGet package DLLs to output directory -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <!-- NuGet Packages -->
+  <ItemGroup>
+    <PackageReference Include="EmbedIO" Version="3.5.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!-- Revit API References -->
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Post-build deployment to Revit ApplicationPlugins -->
+  <Target Name="DeployToRevit" AfterTargets="Build">
+    <PropertyGroup>
+      <BundlePath>$(APPDATA)\Autodesk\ApplicationPlugins\bim-shady.bundle\Contents</BundlePath>
+    </PropertyGroup>
+
+    <Message Text="Deploying to $(BundlePath)" Importance="high" />
+
+    <!-- Create bundle directory -->
+    <MakeDir Directories="$(BundlePath)" />
+
+    <!-- Copy main assembly and PDB -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BundlePath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(BundlePath)" SkipUnchangedFiles="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+
+    <!-- Copy all dependency DLLs (EmbedIO, Newtonsoft.Json, Swan, etc.) -->
+    <ItemGroup>
+      <DependencyDlls Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(BundlePath)" SkipUnchangedFiles="true" />
+
+    <!-- Copy addin manifest -->
+    <Copy SourceFiles="$(ProjectDir)Deployment\BimShady.addin" DestinationFolder="$(BundlePath)" SkipUnchangedFiles="true" />
+
+    <!-- Copy PackageContents.xml to bundle root -->
+    <Copy SourceFiles="$(ProjectDir)Deployment\PackageContents.xml" DestinationFolder="$(BundlePath)\.." SkipUnchangedFiles="true" />
+
+    <Message Text="Deployment complete!" Importance="high" />
+  </Target>
+
+</Project>

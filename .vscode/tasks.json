@@ -1,0 +1,117 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/BimShady.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Build Debug and deploy to Revit ApplicationPlugins"
+    },
+    {
+      "label": "build-release",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/BimShady.csproj",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "detail": "Build Release and deploy to Revit ApplicationPlugins"
+    },
+    {
+      "label": "clean",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "clean",
+        "${workspaceFolder}/BimShady.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "detail": "Clean build outputs"
+    },
+    {
+      "label": "rebuild",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/BimShady.csproj",
+        "--no-incremental",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "detail": "Clean and rebuild"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "build",
+        "--project",
+        "${workspaceFolder}/BimShady.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "isBackground": true,
+      "group": "build",
+      "detail": "Watch for changes and auto-rebuild"
+    },
+    {
+      "label": "restore",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "restore",
+        "${workspaceFolder}/BimShady.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "detail": "Restore NuGet packages"
+    },
+    {
+      "label": "deploy-only",
+      "type": "shell",
+      "command": "xcopy",
+      "args": [
+        "/Y",
+        "/I",
+        "${workspaceFolder}\\bin\\Debug\\net8.0-windows\\BimShady.*",
+        "%APPDATA%\\Autodesk\\ApplicationPlugins\\bim-shady.bundle\\Contents\\"
+      ],
+      "problemMatcher": [],
+      "group": "build",
+      "detail": "Copy built files to Revit plugin folder (without rebuilding)"
+    },
+    {
+      "label": "open-bundle-folder",
+      "type": "shell",
+      "command": "explorer",
+      "args": [
+        "%APPDATA%\\Autodesk\\ApplicationPlugins\\bim-shady.bundle"
+      ],
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Open the deployed bundle folder in Explorer"
+    }
+  ]
+}

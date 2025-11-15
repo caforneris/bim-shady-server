@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>BimShady</Name>
+    <Assembly>BimShady.dll</Assembly>
+    <FullClassName>BimShady.App</FullClassName>
+    <ClientId>f8a7b3c2-1d4e-5f6a-9b8c-7e2d1a3f4b5c</ClientId>
+    <VendorId>CITRUS</VendorId>
+    <VendorDescription>Citrus Development</VendorDescription>
+  </AddIn>
+</RevitAddIns>

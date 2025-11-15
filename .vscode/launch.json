@@ -1,0 +1,56 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Revit 2025",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "C:\\Program Files\\Autodesk\\Revit 2025\\Revit.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchPaths": [
+          "${workspaceFolder}/bin/Debug/net8.0-windows",
+          "%APPDATA%/Autodesk/ApplicationPlugins/bim-shady.bundle/Contents"
+        ],
+        "searchMicrosoftSymbolServer": true
+      }
+    },
+    {
+      "name": "Release Revit 2025",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-release",
+      "program": "C:\\Program Files\\Autodesk\\Revit 2025\\Revit.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchPaths": [
+          "${workspaceFolder}/bin/Release/net8.0-windows",
+          "%APPDATA%/Autodesk/ApplicationPlugins/bim-shady.bundle/Contents"
+        ],
+        "searchMicrosoftSymbolServer": true
+      }
+    },
+    {
+      "name": "Attach to Revit",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "Revit.exe",
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchPaths": [
+          "${workspaceFolder}/bin/Debug/net8.0-windows",
+          "%APPDATA%/Autodesk/ApplicationPlugins/bim-shady.bundle/Contents"
+        ]
+      }
+    }
+  ]
+}

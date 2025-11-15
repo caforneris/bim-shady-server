@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage
+  SchemaVersion="1.0"
+  AutodeskProduct="Revit"
+  ProductType="Application"
+  Name="BIM Shady"
+  AppVersion="1.0.0"
+  Description="BIM Shady Revit Plugin"
+  ProductCode="{F8A7B3C2-1D4E-5F6A-9B8C-7E2D1A3F4B5C}">
+
+  <CompanyDetails Name="Citrus" />
+
+  <Components Description="Revit 2025">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2025" SeriesMax="R2025" />
+    <ComponentEntry AppName="BIM Shady" ModuleName="./Contents/BimShady.addin" />
+  </Components>
+
+</ApplicationPackage>
