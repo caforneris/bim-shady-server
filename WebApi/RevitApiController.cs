@@ -263,6 +263,72 @@ public class RevitApiController : WebApiController
         BimShadyLogger.LogApi($"POST /api/import-plan completed: {(response.Success ? "SUCCESS" : "FAILED")}");
         return response;
     }
+
+    /// <summary>
+    /// POST /api/import-sketch - Import sketch from drawing app
+    /// Simple format: walls (with IDs), doors (snapped), rooms (with labels)
+    /// Accepts either:
+    /// - Direct JSON payload in body
+    /// - File path string (e.g., "C:\path\to\file.json") to read from disk
+    /// Coordinates are in feet
+    /// </summary>
+    [Route(HttpVerbs.Post, "/import-sketch")]
+    public async Task<object> ImportSketch()
+    {
+        BimShadyLogger.LogApi("POST /api/import-sketch received");
+        using var reader = new StreamReader(HttpContext.Request.InputStream, Encoding.UTF8);
+        var body = await reader.ReadToEndAsync();
+        BimShadyLogger.Log($"Request body size: {body.Length} characters");
+
+        string jsonPayload = body;
+
+        // Check if body is a file path (starts with drive letter or is a path)
+        var trimmedBody = body.Trim().Trim('"');
+        if ((trimmedBody.Length > 2 && trimmedBody[1] == ':' && (trimmedBody[2] == '\\' || trimmedBody[2] == '/')) ||
+            trimmedBody.StartsWith("\\\\") || trimmedBody.StartsWith("//"))
+        {
+            // It's a file path, read the file
+            BimShadyLogger.Log($"Body appears to be a file path: {trimmedBody}");
+            if (!System.IO.File.Exists(trimmedBody))
+            {
+                BimShadyLogger.LogError($"File not found: {trimmedBody}");
+                return new RevitApiResponse { Success = false, Error = $"File not found: {trimmedBody}" };
+            }
+
+            try
+            {
+                jsonPayload = await System.IO.File.ReadAllTextAsync(trimmedBody);
+                BimShadyLogger.Log($"Read {jsonPayload.Length} characters from file");
+            }
+            catch (Exception ex)
+            {
+                BimShadyLogger.LogError($"Failed to read file: {ex.Message}");
+                return new RevitApiResponse { Success = false, Error = $"Failed to read file: {ex.Message}" };
+            }
+        }
+
+        var sketch = JsonConvert.DeserializeObject<SketchPayload>(jsonPayload);
+        if (sketch == null)
+        {
+            BimShadyLogger.LogError("Failed to deserialize sketch payload");
+            return new RevitApiResponse { Success = false, Error = "Invalid JSON payload" };
+        }
+
+        BimShadyLogger.Log($"Parsed sketch: {sketch.Walls?.Count ?? 0} walls, {sketch.Doors?.Count ?? 0} doors, {sketch.Rooms?.Count ?? 0} rooms");
+
+        var request = new RevitApiRequest
+        {
+            Action = "import_sketch",
+            Parameters = new Dictionary<string, object>
+            {
+                { "payload", jsonPayload }
+            }
+        };
+
+        var response = await RevitExternalEventHandler.Instance.QueueRequestAsync(request);
+        BimShadyLogger.LogApi($"POST /api/import-sketch completed: {(response.Success ? "SUCCESS" : "FAILED")}");
+        return response;
+    }
 }
 
 /// <summary>

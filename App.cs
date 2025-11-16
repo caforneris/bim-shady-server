@@ -34,16 +34,6 @@ public class App : IExternalApplication
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             BimShadyLogger.Log($"Assembly path: {assemblyPath}");
 
-            // Create Hello World button
-            PushButtonData helloButtonData = new PushButtonData(
-                "HelloWorld",
-                "Hello\nWorld",
-                assemblyPath,
-                "BimShady.HelloWorldCommand"
-            );
-            helloButtonData.ToolTip = "Shows a Hello World dialog";
-            PushButton helloButton = panel.AddItem(helloButtonData) as PushButton;
-
             // Create API Server button
             PushButtonData apiServerButtonData = new PushButtonData(
                 "StartApiServer",

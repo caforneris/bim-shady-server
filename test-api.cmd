@@ -19,6 +19,7 @@ if "%1"=="sheet" goto sheet
 if "%1"=="export" goto export
 if "%1"=="full-pipeline" goto full_pipeline
 if "%1"=="import-plan" goto import_plan
+if "%1"=="import-sketch" goto import_sketch
 goto menu
 
 :menu
@@ -30,6 +31,7 @@ echo   test-api project       - Get project info
 echo   test-api categories    - List all categories
 echo   test-api import-file   - Import from output.json (simple)
 echo   test-api import-plan   - Import comprehensive plan with doors/fixtures
+echo   test-api import-sketch - Import sketch (walls, doors, rooms from pixels)
 echo   test-api walls-rect    - Create rectangle (4 walls)
 echo   test-api walls-single  - Create single test wall
 echo   test-api schedule      - Create room schedule
@@ -104,8 +106,8 @@ echo ========================================
 echo Running Full Sketch-to-BIM Pipeline
 echo ========================================
 echo.
-echo Step 1: Import comprehensive plan (walls, rooms, doors, fixtures, tags)...
-curl -s -X POST %BASE_URL%/import-plan -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\comprehensive_plan.json
+echo Step 1: Import sketch (walls, doors, rooms with centered tags)...
+curl -s -X POST %BASE_URL%/import-sketch -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\output.json
 echo.
 echo.
 echo Step 2: Create room schedule...
@@ -127,8 +129,14 @@ goto end
 
 :import_plan
 echo Testing: POST /api/import-plan (comprehensive floor plan)
-curl -s -X POST %BASE_URL%/import-plan -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\comprehensive_plan.json
-REM curl -s -X POST %BASE_URL%/import-plan -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\floorplan_converted.json
+REM curl -s -X POST %BASE_URL%/import-plan -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\comprehensive_plan.json
+curl -s -X POST %BASE_URL%/import-plan -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\floorplan_converted.json
+echo.
+goto end
+
+:import_sketch
+echo Testing: POST /api/import-sketch (sketch from drawing app)
+curl -s -X POST %BASE_URL%/import-sketch -H "Content-Type: application/json" -d @C:\Users\craig.forneris\Downloads\output.json
 echo.
 goto end
 
